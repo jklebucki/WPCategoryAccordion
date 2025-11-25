@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Category Accordion Widget
  * Plugin URI: https://github.com/jklebucki/wc-category-accordion-widget
  * Description: Nowoczesny widget wyświetlający kategorie produktów WooCommerce w formie interaktywnego accordion z eleganckim stylowaniem
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Your Name
  * Author URI: https://github.com/jklebucki
  * License: GPL v2 or later
@@ -76,8 +76,16 @@ class WC_Category_Accordion_Widget extends WP_Widget {
 
         echo $args['before_widget'];
 
+        // Pobierz ustawienia rozmiaru czcionki
+        $title_font_size = isset($instance['title_font_size']) ? absint($instance['title_font_size']) : 18;
+        $category_font_size = isset($instance['category_font_size']) ? absint($instance['category_font_size']) : 14;
+        
+        // Unikalne ID dla tego widgetu
+        $widget_id = $args['widget_id'];
+
         if (!empty($instance['title'])) {
-            echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
+            $title_style = 'style="font-size: ' . esc_attr($title_font_size) . 'px;"';
+            echo $args['before_title'] . '<span ' . $title_style . '>' . apply_filters('widget_title', $instance['title']) . '</span>' . $args['after_title'];
         }
 
         // Pobierz ustawienia
@@ -97,6 +105,12 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         ));
 
         if (!empty($categories) && !is_wp_error($categories)) {
+            // Dodaj inline style dla rozmiaru czcionki kategorii
+            echo '<style>';
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item__link { font-size: ' . esc_attr($category_font_size) . 'px !important; }';
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item-count { font-size: ' . esc_attr(max(10, $category_font_size - 2)) . 'px !important; }';
+            echo '</style>';
+            
             echo '<div class="wc-category-accordion-widget__container">';
             echo '<ul class="wc-category-accordion-list wc-category-accordion-list--depth-0">';
             
@@ -193,6 +207,8 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         $show_counts = isset($instance['show_counts']) ? (bool) $instance['show_counts'] : true;
         $hide_empty = isset($instance['hide_empty']) ? (bool) $instance['hide_empty'] : true;
         $hierarchical = isset($instance['hierarchical']) ? (bool) $instance['hierarchical'] : true;
+        $title_font_size = !empty($instance['title_font_size']) ? absint($instance['title_font_size']) : 18;
+        $category_font_size = !empty($instance['category_font_size']) ? absint($instance['category_font_size']) : 14;
         ?>
         <p>
             <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
@@ -253,6 +269,26 @@ class WC_Category_Accordion_Widget extends WP_Widget {
                 <?php _e('Pokaż podkategorie', 'wc-category-accordion-widget'); ?>
             </label>
         </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('title_font_size')); ?>">
+                <?php _e('Wielkość czcionki tytułu (px):', 'wc-category-accordion-widget'); ?>
+            </label>
+            <input class="tiny-text" id="<?php echo esc_attr($this->get_field_id('title_font_size')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('title_font_size')); ?>" 
+                   type="number" min="10" max="48" step="1" value="<?php echo esc_attr($title_font_size); ?>">
+            <small><?php _e('Domyślnie: 18px', 'wc-category-accordion-widget'); ?></small>
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('category_font_size')); ?>">
+                <?php _e('Wielkość czcionki kategorii (px):', 'wc-category-accordion-widget'); ?>
+            </label>
+            <input class="tiny-text" id="<?php echo esc_attr($this->get_field_id('category_font_size')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('category_font_size')); ?>" 
+                   type="number" min="10" max="32" step="1" value="<?php echo esc_attr($category_font_size); ?>">
+            <small><?php _e('Domyślnie: 14px', 'wc-category-accordion-widget'); ?></small>
+        </p>
         <?php
     }
 
@@ -267,6 +303,8 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         $instance['show_counts'] = !empty($new_instance['show_counts']) ? 1 : 0;
         $instance['hide_empty'] = !empty($new_instance['hide_empty']) ? 1 : 0;
         $instance['hierarchical'] = !empty($new_instance['hierarchical']) ? 1 : 0;
+        $instance['title_font_size'] = (!empty($new_instance['title_font_size'])) ? absint($new_instance['title_font_size']) : 18;
+        $instance['category_font_size'] = (!empty($new_instance['category_font_size'])) ? absint($new_instance['category_font_size']) : 14;
 
         return $instance;
     }
