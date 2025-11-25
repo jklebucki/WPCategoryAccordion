@@ -1,0 +1,329 @@
+<?php
+/**
+ * Plugin Name: WooCommerce Category Accordion Widget
+ * Plugin URI: https://github.com/jklebucki/wc-category-accordion-widget
+ * Description: Nowoczesny widget wyświetlający kategorie produktów WooCommerce w formie interaktywnego accordion z eleganckim stylowaniem
+ * Version: 1.0.0
+ * Author: Your Name
+ * Author URI: https://github.com/jklebucki
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: wc-category-accordion-widget
+ * Domain Path: /languages
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
+ * WC requires at least: 3.0
+ * WC tested up to: 8.0
+ */
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+// Define plugin constants
+define('WC_CAT_ACCORDION_VERSION', '1.0.0');
+define('WC_CAT_ACCORDION_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('WC_CAT_ACCORDION_PLUGIN_URL', plugin_dir_url(__FILE__));
+
+/**
+ * Check if WooCommerce is active
+ */
+function wc_cat_accordion_check_woocommerce() {
+    if (!class_exists('WooCommerce')) {
+        add_action('admin_notices', 'wc_cat_accordion_woocommerce_missing_notice');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Admin notice if WooCommerce is not active
+ */
+function wc_cat_accordion_woocommerce_missing_notice() {
+    ?>
+    <div class="error">
+        <p><?php _e('WooCommerce Category Accordion Widget wymaga zainstalowanego i aktywnego WooCommerce.', 'wc-category-accordion-widget'); ?></p>
+    </div>
+    <?php
+}
+
+/**
+ * WooCommerce Category Accordion Widget Class
+ */
+class WC_Category_Accordion_Widget extends WP_Widget {
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        parent::__construct(
+            'wc_category_accordion_widget',
+            __('Kategorie Produktów (Accordion)', 'wc-category-accordion-widget'),
+            array(
+                'description' => __('Wyświetla kategorie produktów WooCommerce w formie rozwijalnego accordion', 'wc-category-accordion-widget'),
+                'classname' => 'wc-category-accordion-widget'
+            )
+        );
+    }
+
+    /**
+     * Front-end display of widget
+     */
+    public function widget($args, $instance) {
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+
+        echo $args['before_widget'];
+
+        if (!empty($instance['title'])) {
+            echo $args['before_title'] . apply_filters('widget_title', $instance['title']) . $args['after_title'];
+        }
+
+        // Pobierz ustawienia
+        $orderby = isset($instance['orderby']) ? $instance['orderby'] : 'name';
+        $order = isset($instance['order']) ? $instance['order'] : 'ASC';
+        $show_counts = isset($instance['show_counts']) ? (bool) $instance['show_counts'] : true;
+        $hide_empty = isset($instance['hide_empty']) ? (bool) $instance['hide_empty'] : true;
+        $hierarchical = isset($instance['hierarchical']) ? (bool) $instance['hierarchical'] : true;
+
+        // Pobierz kategorie produktów
+        $categories = get_terms(array(
+            'taxonomy' => 'product_cat',
+            'orderby' => $orderby,
+            'order' => $order,
+            'hide_empty' => $hide_empty,
+            'parent' => 0 // Tylko kategorie główne
+        ));
+
+        if (!empty($categories) && !is_wp_error($categories)) {
+            echo '<div class="wc-category-accordion-widget__container">';
+            echo '<ul class="wc-category-accordion-list wc-category-accordion-list--depth-0">';
+            
+            foreach ($categories as $category) {
+                $this->display_category($category, $show_counts, $hierarchical, $hide_empty);
+            }
+            
+            echo '</ul>';
+            echo '</div>';
+        }
+
+        echo $args['after_widget'];
+    }
+
+    /**
+     * Wyświetl pojedynczą kategorię
+     */
+    private function display_category($category, $show_counts = true, $hierarchical = true, $hide_empty = true) {
+        $category_link = get_term_link($category);
+        $has_children = false;
+        $children = array();
+
+        // Sprawdź czy ma podkategorie
+        if ($hierarchical) {
+            $children = get_terms(array(
+                'taxonomy' => 'product_cat',
+                'hide_empty' => $hide_empty,
+                'parent' => $category->term_id
+            ));
+            $has_children = !empty($children) && !is_wp_error($children);
+        }
+
+        $li_class = 'wc-category-accordion-list-item';
+        if ($has_children) {
+            $li_class .= ' has-children';
+        }
+
+        echo '<li class="' . esc_attr($li_class) . '">';
+        
+        // Link do kategorii
+        echo '<a href="' . esc_url($category_link) . '" class="wc-category-accordion-list-item__link">';
+        echo '<span class="wc-category-accordion-list-item__name">' . esc_html($category->name) . '</span>';
+        echo '</a>';
+
+        // Licznik produktów
+        if ($show_counts) {
+            echo '<span class="wc-category-accordion-list-item-count">';
+            echo '<span aria-hidden="true">' . absint($category->count) . '</span>';
+            echo '<span class="screen-reader-text">' . sprintf(_n('%s produkt', '%s produktów', $category->count, 'wc-category-accordion-widget'), number_format_i18n($category->count)) . '</span>';
+            echo '</span>';
+        }
+
+        // Wyświetl podkategorie
+        if ($has_children) {
+            echo '<ul class="wc-category-accordion-list wc-category-accordion-list--depth-1">';
+            foreach ($children as $child) {
+                $this->display_subcategory($child, $show_counts);
+            }
+            echo '</ul>';
+        }
+
+        echo '</li>';
+    }
+
+    /**
+     * Wyświetl podkategorię
+     */
+    private function display_subcategory($category, $show_counts = true) {
+        $category_link = get_term_link($category);
+
+        echo '<li class="wc-category-accordion-list-item">';
+        
+        echo '<a href="' . esc_url($category_link) . '" class="wc-category-accordion-list-item__link">';
+        echo '<span class="wc-category-accordion-list-item__name">' . esc_html($category->name) . '</span>';
+        echo '</a>';
+
+        if ($show_counts) {
+            echo '<span class="wc-category-accordion-list-item-count">';
+            echo '<span aria-hidden="true">' . absint($category->count) . '</span>';
+            echo '<span class="screen-reader-text">' . sprintf(_n('%s produkt', '%s produktów', $category->count, 'wc-category-accordion-widget'), number_format_i18n($category->count)) . '</span>';
+            echo '</span>';
+        }
+
+        echo '</li>';
+    }
+
+    /**
+     * Back-end widget form
+     */
+    public function form($instance) {
+        $title = !empty($instance['title']) ? $instance['title'] : __('Kategorie Produktów', 'wc-category-accordion-widget');
+        $orderby = !empty($instance['orderby']) ? $instance['orderby'] : 'name';
+        $order = !empty($instance['order']) ? $instance['order'] : 'ASC';
+        $show_counts = isset($instance['show_counts']) ? (bool) $instance['show_counts'] : true;
+        $hide_empty = isset($instance['hide_empty']) ? (bool) $instance['hide_empty'] : true;
+        $hierarchical = isset($instance['hierarchical']) ? (bool) $instance['hierarchical'] : true;
+        ?>
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
+                <?php _e('Tytuł:', 'wc-category-accordion-widget'); ?>
+            </label>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('title')); ?>" 
+                   type="text" value="<?php echo esc_attr($title); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('orderby')); ?>">
+                <?php _e('Sortuj według:', 'wc-category-accordion-widget'); ?>
+            </label>
+            <select class="widefat" id="<?php echo esc_attr($this->get_field_id('orderby')); ?>"
+                    name="<?php echo esc_attr($this->get_field_name('orderby')); ?>">
+                <option value="name" <?php selected($orderby, 'name'); ?>><?php _e('Nazwa', 'wc-category-accordion-widget'); ?></option>
+                <option value="count" <?php selected($orderby, 'count'); ?>><?php _e('Liczba produktów', 'wc-category-accordion-widget'); ?></option>
+                <option value="id" <?php selected($orderby, 'id'); ?>><?php _e('ID', 'wc-category-accordion-widget'); ?></option>
+                <option value="slug" <?php selected($orderby, 'slug'); ?>><?php _e('Slug', 'wc-category-accordion-widget'); ?></option>
+            </select>
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('order')); ?>">
+                <?php _e('Kolejność:', 'wc-category-accordion-widget'); ?>
+            </label>
+            <select class="widefat" id="<?php echo esc_attr($this->get_field_id('order')); ?>"
+                    name="<?php echo esc_attr($this->get_field_name('order')); ?>">
+                <option value="ASC" <?php selected($order, 'ASC'); ?>><?php _e('Rosnąco', 'wc-category-accordion-widget'); ?></option>
+                <option value="DESC" <?php selected($order, 'DESC'); ?>><?php _e('Malejąco', 'wc-category-accordion-widget'); ?></option>
+            </select>
+        </p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked($show_counts); ?> 
+                   id="<?php echo esc_attr($this->get_field_id('show_counts')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('show_counts')); ?>">
+            <label for="<?php echo esc_attr($this->get_field_id('show_counts')); ?>">
+                <?php _e('Pokaż licznik produktów', 'wc-category-accordion-widget'); ?>
+            </label>
+        </p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked($hide_empty); ?> 
+                   id="<?php echo esc_attr($this->get_field_id('hide_empty')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('hide_empty')); ?>">
+            <label for="<?php echo esc_attr($this->get_field_id('hide_empty')); ?>">
+                <?php _e('Ukryj puste kategorie', 'wc-category-accordion-widget'); ?>
+            </label>
+        </p>
+
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked($hierarchical); ?> 
+                   id="<?php echo esc_attr($this->get_field_id('hierarchical')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('hierarchical')); ?>">
+            <label for="<?php echo esc_attr($this->get_field_id('hierarchical')); ?>">
+                <?php _e('Pokaż podkategorie', 'wc-category-accordion-widget'); ?>
+            </label>
+        </p>
+        <?php
+    }
+
+    /**
+     * Sanitize widget form values as they are saved
+     */
+    public function update($new_instance, $old_instance) {
+        $instance = array();
+        $instance['title'] = (!empty($new_instance['title'])) ? sanitize_text_field($new_instance['title']) : '';
+        $instance['orderby'] = (!empty($new_instance['orderby'])) ? sanitize_text_field($new_instance['orderby']) : 'name';
+        $instance['order'] = (!empty($new_instance['order'])) ? sanitize_text_field($new_instance['order']) : 'ASC';
+        $instance['show_counts'] = !empty($new_instance['show_counts']) ? 1 : 0;
+        $instance['hide_empty'] = !empty($new_instance['hide_empty']) ? 1 : 0;
+        $instance['hierarchical'] = !empty($new_instance['hierarchical']) ? 1 : 0;
+
+        return $instance;
+    }
+}
+
+/**
+ * Register widget
+ */
+function wc_cat_accordion_register_widget() {
+    if (wc_cat_accordion_check_woocommerce()) {
+        register_widget('WC_Category_Accordion_Widget');
+    }
+}
+add_action('widgets_init', 'wc_cat_accordion_register_widget');
+
+/**
+ * Enqueue styles and scripts for the widget
+ */
+function wc_cat_accordion_enqueue_assets() {
+    // Sprawdź czy widget jest aktywny
+    if (is_active_widget(false, false, 'wc_category_accordion_widget', true)) {
+        wp_enqueue_style(
+            'wc-category-accordion-widget',
+            WC_CAT_ACCORDION_PLUGIN_URL . 'assets/css/style.css',
+            array(),
+            WC_CAT_ACCORDION_VERSION
+        );
+
+        wp_enqueue_script(
+            'wc-category-accordion-widget',
+            WC_CAT_ACCORDION_PLUGIN_URL . 'assets/js/script.js',
+            array(),
+            WC_CAT_ACCORDION_VERSION,
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'wc_cat_accordion_enqueue_assets');
+
+/**
+ * Load plugin textdomain
+ */
+function wc_cat_accordion_load_textdomain() {
+    load_plugin_textdomain(
+        'wc-category-accordion-widget',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages'
+    );
+}
+add_action('plugins_loaded', 'wc_cat_accordion_load_textdomain');
+
+/**
+ * Add settings link on plugin page
+ */
+function wc_cat_accordion_add_settings_link($links) {
+    $settings_link = '<a href="' . admin_url('widgets.php') . '">' . __('Ustawienia', 'wc-category-accordion-widget') . '</a>';
+    array_unshift($links, $settings_link);
+    return $links;
+}
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'wc_cat_accordion_add_settings_link');

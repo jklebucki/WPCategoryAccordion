@@ -1,0 +1,270 @@
+/* ===== WooCommerce Category Accordion Widget Styles ===== */
+
+/* Kontener główny */
+.wc-category-accordion-widget__container {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 18px;
+    margin: 0 0 24px 0;
+}
+
+/* Reset list */
+.wc-category-accordion-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Lista poziomu 0 (główna) */
+.wc-category-accordion-list--depth-0 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Lista poziomu 1 (subkategorie) */
+.wc-category-accordion-list--depth-1 {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+    padding-left: 28px;
+}
+
+/* Stan rozwinięty */
+.wc-category-accordion-list-item.expanded > .wc-category-accordion-list--depth-1 {
+    max-height: 2000px;
+    opacity: 1;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+/* Element listy */
+.wc-category-accordion-list-item {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+/* Element listy głównej - padding dla całego wiersza */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item {
+    padding: 10px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item:hover {
+    background-color: #f7fafc;
+}
+
+/* Element z subkategoriami - dodanie wskaźnika */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item.has-children > .wc-category-accordion-list-item__link::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #718096;
+    transition: transform 0.3s ease, color 0.2s ease;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ikona w stanie rozwiniętym */
+.wc-category-accordion-list-item.expanded > .wc-category-accordion-list-item__link::before {
+    transform: rotate(90deg);
+    color: #7c3aed;
+}
+
+/* Link kategorii głównej */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item > .wc-category-accordion-list-item__link {
+    display: inline;
+    padding: 0 0 0 18px;
+    text-decoration: none;
+    color: #2d3748;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    position: relative;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Link kategorii głównej - hover */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item:hover > .wc-category-accordion-list-item__link {
+    color: #7c3aed;
+}
+
+/* Link kategorii głównej - aktywny */
+.wc-category-accordion-list-item.expanded {
+    background-color: #faf5ff;
+}
+
+.wc-category-accordion-list-item.expanded > .wc-category-accordion-list-item__link {
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+/* Element subkategorii */
+.wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item {
+    padding: 7px 10px 7px 0;
+}
+
+/* Link subkategorii */
+.wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item > .wc-category-accordion-list-item__link {
+    display: inline;
+    padding: 0;
+    text-decoration: none;
+    color: #4a5568;
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+/* Link subkategorii - hover */
+.wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item:hover > .wc-category-accordion-list-item__link {
+    color: #7c3aed;
+    padding-left: 4px;
+}
+
+/* Nazwa kategorii */
+.wc-category-accordion-list-item__name {
+    display: inline;
+}
+
+/* Licznik kategorii głównej */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item > .wc-category-accordion-list-item-count {
+    display: inline;
+    font-size: 13px;
+    font-weight: 400;
+    color: #718096;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+/* Licznik - stan hover całego elementu */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item:hover > .wc-category-accordion-list-item-count {
+    color: #7c3aed;
+}
+
+/* Licznik subkategorii */
+.wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item > .wc-category-accordion-list-item-count {
+    display: inline;
+    font-size: 12px;
+    font-weight: 400;
+    color: #a0aec0;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+/* Licznik subkategorii - hover */
+.wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item:hover > .wc-category-accordion-list-item-count {
+    color: #7c3aed;
+}
+
+/* Screen reader text w liczniku */
+.wc-category-accordion-list-item-count .screen-reader-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Aria-hidden dla wizualnego licznika */
+.wc-category-accordion-list-item-count span[aria-hidden="true"] {
+    display: inline;
+}
+
+/* Animacja dla subkategorii */
+.wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item {
+    animation: wcCategorySlideIn 0.2s ease forwards;
+    opacity: 0;
+}
+
+.wc-category-accordion-list-item.expanded > .wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item {
+    opacity: 1;
+}
+
+@keyframes wcCategorySlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive dla kategorii */
+@media (max-width: 640px) {
+    .wc-category-accordion-widget__container {
+        padding: 14px;
+    }
+
+    .wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item {
+        padding: 8px;
+    }
+
+    .wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item > .wc-category-accordion-list-item__link {
+        padding-left: 14px;
+        font-size: 13px;
+    }
+
+    .wc-category-accordion-list--depth-1 {
+        padding-left: 20px;
+    }
+
+    .wc-category-accordion-list--depth-1 > .wc-category-accordion-list-item > .wc-category-accordion-list-item__link {
+        font-size: 12px;
+    }
+}
+
+/* Focus state dla accessibility */
+.wc-category-accordion-list-item__link:focus {
+    outline: 2px solid #7c3aed;
+    outline-offset: 2px;
+}
+
+/* Separator między głównymi kategoriami */
+.wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item:not(:last-child)::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background-color: #f0f0f0;
+    margin: 4px 0;
+    width: 100%;
+    flex-basis: 100%;
+}
+
+/* Widget sidebar styling */
+.widget.wc-category-accordion-widget {
+    margin-bottom: 24px;
+}
+
+.widget.wc-category-accordion-widget .widget-title {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #2d3748;
+    margin: 0 0 14px 0;
+    padding: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+}
