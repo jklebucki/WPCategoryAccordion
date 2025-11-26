@@ -1,0 +1,146 @@
+# Copyright (C) 2025 WooCommerce Category Accordion Widget
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Category Accordion Widget 1.0.3\n"
+"Report-Msgid-Bugs-To: https://github.com/jklebucki/WPCategoryAccordion/issues\n"
+"POT-Creation-Date: 2025-11-26 12:00+0000\n"
+"PO-Revision-Date: 2025-11-26 12:00+0000\n"
+"Last-Translator: Jarosław Kłębucki\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: wc-category-accordion-widget.php:48
+msgid "WooCommerce Category Accordion Widget wymaga zainstalowanego i aktywnego WooCommerce."
+msgstr "WooCommerce Category Accordion Widget requires WooCommerce to be installed and active."
+
+#: wc-category-accordion-widget.php:64
+msgid "Kategorie Produktów (Accordion)"
+msgstr "Product Categories (Accordion)"
+
+#: wc-category-accordion-widget.php:66
+msgid "Wyświetla kategorie produktów WooCommerce w formie rozwijalnego accordion"
+msgstr "Displays WooCommerce product categories in an expandable accordion form"
+
+#: wc-category-accordion-widget.php:168
+#, php-format
+msgid "%s produkt"
+msgid_plural "%s produktów"
+msgstr[0] "%s product"
+msgstr[1] "%s products"
+
+#: wc-category-accordion-widget.php:219
+msgid "Kategorie Produktów"
+msgstr "Product Categories"
+
+#: wc-category-accordion-widget.php:240
+msgid "Tytuł:"
+msgstr "Title:"
+
+#: wc-category-accordion-widget.php:248
+msgid "Sortuj według:"
+msgstr "Sort by:"
+
+#: wc-category-accordion-widget.php:251
+msgid "Nazwa"
+msgstr "Name"
+
+#: wc-category-accordion-widget.php:252
+msgid "Liczba produktów"
+msgstr "Product count"
+
+#: wc-category-accordion-widget.php:253
+msgid "ID"
+msgstr "ID"
+
+#: wc-category-accordion-widget.php:254
+msgid "Slug"
+msgstr "Slug"
+
+#: wc-category-accordion-widget.php:259
+msgid "Kolejność:"
+msgstr "Order:"
+
+#: wc-category-accordion-widget.php:262
+msgid "Rosnąco"
+msgstr "Ascending"
+
+#: wc-category-accordion-widget.php:263
+msgid "Malejąco"
+msgstr "Descending"
+
+#: wc-category-accordion-widget.php:270
+msgid "Pokaż licznik produktów"
+msgstr "Show product count"
+
+#: wc-category-accordion-widget.php:277
+msgid "Ukryj puste kategorie"
+msgstr "Hide empty categories"
+
+#: wc-category-accordion-widget.php:284
+msgid "Pokaż podkategorie"
+msgstr "Show subcategories"
+
+#: wc-category-accordion-widget.php:290
+msgid "Wielkość czcionki tytułu (px):"
+msgstr "Title font size (px):"
+
+#: wc-category-accordion-widget.php:295
+msgid "Domyślnie: 18px"
+msgstr "Default: 18px"
+
+#: wc-category-accordion-widget.php:299
+msgid "Wielkość czcionki kategorii (px):"
+msgstr "Category font size (px):"
+
+#: wc-category-accordion-widget.php:304
+msgid "Domyślnie: 14px"
+msgstr "Default: 14px"
+
+#: wc-category-accordion-widget.php:308
+msgid "Kolorystyka"
+msgstr "Color Scheme"
+
+#: wc-category-accordion-widget.php:311
+msgid "Kolor tekstu kategorii:"
+msgstr "Category text color:"
+
+#: wc-category-accordion-widget.php:319
+msgid "Kolor tekstu przy najechaniu:"
+msgstr "Text color on hover:"
+
+#: wc-category-accordion-widget.php:327
+msgid "Kolor tła kontenera:"
+msgstr "Container background color:"
+
+#: wc-category-accordion-widget.php:335
+msgid "Kolor tła przy najechaniu:"
+msgstr "Background color on hover:"
+
+#: wc-category-accordion-widget.php:343
+msgid "Kolor ramki:"
+msgstr "Border color:"
+
+#: wc-category-accordion-widget.php:351
+msgid "Kolor tła licznika:"
+msgstr "Counter background color:"
+
+#: wc-category-accordion-widget.php:359
+msgid "Kolor tekstu licznika:"
+msgstr "Counter text color:"
+
+#: wc-category-accordion-widget.php:367
+msgid "Kolor ikony accordion:"
+msgstr "Accordion icon color:"
+
+#: wc-category-accordion-widget.php:375
+msgid "Kolor ikony (rozwinięta):"
+msgstr "Icon color (expanded):"
+
+#: wc-category-accordion-widget.php:437
+msgid "Ustawienia"
+msgstr "Settings"

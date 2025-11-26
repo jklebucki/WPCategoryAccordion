@@ -1,0 +1,2 @@
+compile languages
+msgfmt -o wc-category-accordion-widget-en_US.mo wc-category-accordion-widget-en_US.po && msgfmt -o wc-category-accordion-widget-pl_PL.mo wc-category-accordion-widget-pl_PL.po

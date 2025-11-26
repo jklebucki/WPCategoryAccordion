@@ -1,74 +1,118 @@
 # WooCommerce Category Accordion Widget
 
-Nowoczesny widget WordPress wyświetlający kategorie produktów WooCommerce w formie interaktywnego accordion z eleganckim stylowaniem.
+A modern WordPress widget displaying WooCommerce product categories in an interactive accordion form with elegant styling.
 
-## Opis
+## Description
 
-Ten plugin dodaje do WordPress widget, który wyświetla kategorie produktów WooCommerce w formie rozwijalnej listy (accordion). Widget posiada:
-- Elegancki, minimalistyczny design w fioletowej kolorystyce
-- Płynne animacje rozwijania/zwijania
-- Pełną obsługę dostępności (ARIA, klawiatura)
-- Zapamiętywanie stanu rozwiniętych kategorii (localStorage)
-- Pełną responsywność
-- Konfigurowalne opcje wyświetlania
+This plugin adds a widget to WordPress that displays WooCommerce product categories in an expandable list (accordion). The widget features:
+- Elegant, minimalist design with purple color scheme
+- Smooth expand/collapse animations
+- Full accessibility support (ARIA, keyboard)
+- State persistence for expanded categories (localStorage)
+- Fully responsive
+- Configurable display options
+- Customizable colors and font sizes
 
-## Wymagania
+## Requirements
 
-- WordPress 5.0 lub nowszy
-- PHP 7.0 lub nowszy
-- WooCommerce 3.0 lub nowszy
+- WordPress 5.0 or newer
+- PHP 7.0 or newer
+- WooCommerce 3.0 or newer
 
-## Instalacja
+## Installation
 
-1. Pobierz folder `wc-category-accordion-widget`
-2. Przenieś go do katalogu `/wp-content/plugins/`
-3. Przejdź do panelu administracyjnego WordPress → Wtyczki
-4. Znajdź "WooCommerce Category Accordion Widget" i kliknij "Aktywuj"
+1. Download the `wc-category-accordion-widget` folder
+2. Move it to the `/wp-content/plugins/` directory
+3. Go to WordPress admin panel → Plugins
+4. Find "WooCommerce Category Accordion Widget" and click "Activate"
 
-## Użycie
+## Usage
 
-### Dodawanie widgetu
+### Adding the widget
 
-1. Przejdź do **Wygląd → Widgety** (lub **Wygląd → Dostosuj → Widgety**)
-2. Znajdź widget **"Kategorie Produktów (Accordion)"**
-3. Przeciągnij go do wybranego obszaru widgetów
-4. Skonfiguruj opcje według potrzeb
-5. Kliknij **Zapisz**
+1. Go to **Appearance → Widgets** (or **Appearance → Customize → Widgets**)
+2. Find the **"Product Categories (Accordion)"** widget
+3. Drag it to your desired widget area
+4. Configure options as needed
+5. Click **Save**
 
-### Opcje konfiguracji
+### Configuration options
 
-Widget oferuje następujące opcje:
+The widget offers the following options:
 
-- **Tytuł** - Nagłówek widgetu (domyślnie: "Kategorie Produktów")
-- **Sortuj według** - Nazwa / Liczba produktów / ID / Slug
-- **Kolejność** - Rosnąco / Malejąco
-- **Pokaż licznik produktów** - Wyświetla liczbę produktów w każdej kategorii
-- **Ukryj puste kategorie** - Ukrywa kategorie bez produktów
-- **Pokaż podkategorie** - Włącza wyświetlanie hierarchii kategorii
+**Basic Settings:**
+- **Title** - Widget heading (default: "Product Categories")
+- **Sort by** - Name / Product count / ID / Slug
+- **Order** - Ascending / Descending
+- **Show product count** - Displays the number of products in each category
+- **Hide empty categories** - Hides categories without products
+- **Show subcategories** - Enables hierarchical category display
 
-## Dostosowywanie
+**Typography:**
+- **Title font size** - Size in pixels (10-48px, default: 18px)
+- **Category font size** - Size in pixels (10-32px, default: 14px)
 
-### Zmiana kolorystyki
+**Color Scheme:**
+- **Category text color** - Default: #2d3748
+- **Text color on hover** - Default: #7c3aed
+- **Container background color** - Default: #ffffff
+- **Background color on hover** - Default: #f7fafc
+- **Border color** - Default: #e8e8e8
+- **Counter background color** - Default: #e2e8f0
+- **Counter text color** - Default: #4a5568
+- **Accordion icon color** - Default: #718096
+- **Icon color (expanded)** - Default: #7c3aed
 
-Edytuj plik `assets/css/style.css` i zmień następujące wartości:
+## Translations
 
-```css
-/* Kolor główny (fioletowy) */
-#7c3aed → Twój kolor
+The plugin is translation-ready and includes:
+- **English** (en_US) - built-in
+- **Polish** (pl_PL) - built-in
 
-/* Kolor tła przy rozwinięciu */
-#faf5ff → Twój kolor
+### Adding new translations
 
-/* Kolor tła przy hover */
-#f7fafc → Twój kolor
-```
+You can add translations using popular WordPress translation plugins:
 
-### Tryb pojedynczego rozwinięcia
+#### Method 1: Using Loco Translate (Recommended)
 
-Aby włączyć tryb, w którym tylko jedna kategoria może być rozwinięta jednocześnie, edytuj `assets/js/script.js` i odkomentuj zaznaczony fragment kodu (około linii 35):
+1. Install and activate [Loco Translate](https://wordpress.org/plugins/loco-translate/)
+2. Go to **Loco Translate → Plugins**
+3. Select **WooCommerce Category Accordion Widget**
+4. Click **New language**
+5. Select your language and click **Start translating**
+6. Translate all strings and save
+
+#### Method 2: Using WPML
+
+1. Install and activate [WPML](https://wpml.org/)
+2. Go to **WPML → Theme and plugins localization**
+3. Find **WooCommerce Category Accordion Widget**
+4. Click **Scan for strings**
+5. Translate strings in your language
+
+#### Method 3: Manual translation with Poedit
+
+1. Download and install [Poedit](https://poedit.net/)
+2. Open `/wp-content/plugins/wc-category-accordion-widget/languages/wc-category-accordion-widget.pot`
+3. Choose **Create new translation**
+4. Select your language
+5. Translate all strings
+6. Save as `wc-category-accordion-widget-{locale}.po` (e.g., `wc-category-accordion-widget-de_DE.po`)
+7. Poedit will automatically generate the `.mo` file
+8. Upload both files to the `languages` folder
+
+## Customization
+
+### Changing colors via widget settings
+
+All colors can be customized directly from the widget settings in WordPress admin panel. No need to edit CSS files.
+
+### Single expand mode
+
+To enable a mode where only one category can be expanded at a time, edit `assets/js/script.js` and uncomment the marked code fragment (around line 35):
 
 ```javascript
-// Odkomentuj ten kod:
+// Uncomment this code:
 mainCategories.forEach(function(otherCategory) {
     if (otherCategory !== category && otherCategory.classList.contains('expanded')) {
         otherCategory.classList.remove('expanded');
@@ -76,30 +120,30 @@ mainCategories.forEach(function(otherCategory) {
 });
 ```
 
-### Dodatkowe style
+### Additional styles
 
-Możesz dodać własne style w pliku CSS motywu:
+You can add custom styles in your theme's CSS file:
 
 ```css
-/* Zmiana rozmiaru czcionki tytułu */
+/* Change title font size */
 .widget.wc-category-accordion-widget .widget-title {
     font-size: 14px;
 }
 
-/* Zmiana paddingu kontenera */
+/* Change container padding */
 .wc-category-accordion-widget__container {
     padding: 24px;
 }
 ```
 
-## Shortcode (opcjonalnie)
+## Shortcode (optional)
 
-Jeśli chcesz użyć widgetu jako shortcode, dodaj do `functions.php` motywu:
+If you want to use the widget as a shortcode, add to your theme's `functions.php`:
 
 ```php
 function wc_category_accordion_shortcode($atts) {
     $atts = shortcode_atts(array(
-        'title' => 'Kategorie Produktów',
+        'title' => 'Product Categories',
         'show_counts' => true,
         'hide_empty' => true,
     ), $atts);
@@ -111,68 +155,70 @@ function wc_category_accordion_shortcode($atts) {
 add_shortcode('wc_categories', 'wc_category_accordion_shortcode');
 ```
 
-Użycie:
+Usage:
 ```
-[wc_categories title="Nasze Kategorie" show_counts="1"]
+[wc_categories title="Our Categories" show_counts="1"]
 ```
 
-## Funkcje
+## Features
 
 ### Accessibility
 
-- Pełna obsługa czytników ekranu (ARIA labels)
-- Nawigacja klawiaturą:
+- Full screen reader support (ARIA labels)
+- Keyboard navigation:
   - **Space/Enter** - rozwiń/zwiń kategorię
-  - **Escape** - zwiń wszystkie kategorie
-- Focus states dla elementów interaktywnych
+  - **Space/Enter** - Expand/collapse category
+  - **Escape** - Collapse all categories
+- Focus states for interactive elements
 
-### Responsywność
+### Responsiveness
 
-Widget automatycznie dostosowuje się do urządzeń mobilnych:
-- Zmniejszone fonty na małych ekranach
-- Zmniejszone odstępy
-- Zachowanie pełnej funkcjonalności
+The widget automatically adapts to mobile devices:
+- Reduced fonts on small screens
+- Reduced spacing
+- Full functionality preserved
 
-### Zapamiętywanie stanu
+### State persistence
 
-Stan rozwiniętych kategorii jest zapisywany w localStorage przeglądarki, dzięki czemu jest zachowany między odświeżeniami strony.
+The state of expanded categories is saved in the browser's localStorage, so it persists between page refreshes.
 
-## Rozwiązywanie problemów
+## Troubleshooting
 
-### Widget nie wyświetla kategorii
+### Widget doesn't display categories
 
-1. Upewnij się, że WooCommerce jest aktywny
-2. Sprawdź czy masz utworzone kategorie produktów w WooCommerce
-3. Jeśli włączona jest opcja "Ukryj puste kategorie", upewnij się że kategorie zawierają produkty
+1. Make sure WooCommerce is active
+2. Check if you have created product categories in WooCommerce
+3. If "Hide empty categories" is enabled, make sure categories contain products
 
-### Style nie działają
+### Styles don't work
 
-1. Wyczyść cache przeglądarki i wtyczki cachującej
-2. Sprawdź czy pliki CSS są prawidłowo załadowane (DevTools → Network)
-3. Zwiększ specyficzność selektorów CSS dodając `!important` jeśli motyw nadpisuje style
+1. Clear browser cache and caching plugin cache
+2. Check if CSS files are loaded correctly (DevTools → Network)
+3. Increase CSS selector specificity by adding `!important` if theme overrides styles
 
-### Accordion się nie rozwija
+### Accordion doesn't expand
 
-1. Sprawdź konsolę przeglądarki (F12) czy nie ma błędów JavaScript
-2. Upewnij się że plik `assets/js/script.js` jest prawidłowo załadowany
-3. Sprawdź czy kategorie mają podkategorie (opcja "Pokaż podkategorie" musi być włączona)
+1. Check browser console (F12) for JavaScript errors
+2. Make sure `assets/js/script.js` is loaded correctly
+3. Check if categories have subcategories ("Show subcategories" option must be enabled)
 
-## Wsparcie
+## Support
 
-W razie problemów lub pytań:
-- Sprawdź dokumentację WooCommerce
-- Przejrzyj kod źródłowy w katalogu pluginu
-- Skontaktuj się z autorem
+For issues or questions:
+- Check WooCommerce documentation
+- Review the source code in the plugin directory
+- Contact the author via [GitHub Issues](https://github.com/jklebucki/WPCategoryAccordion/issues)
 
-## Licencja
+## License
 
-GPL v2 lub nowsza - https://www.gnu.org/licenses/gpl-2.0.html
+GPL v2 or later - https://www.gnu.org/licenses/gpl-2.0.html
 
 ## Changelog
 
-### 1.0.0
-- Pierwsze wydanie
-- Podstawowa funkcjonalność accordion
-- Pełna konfiguracja przez panel widgetów
-- Obsługa accessibility
-- Responsywny design
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+
+## Author
+
+**Jarosław Kłębucki**
+- GitHub: [@jklebucki](https://github.com/jklebucki)
+- Plugin URI: https://github.com/jklebucki/WPCategoryAccordion
