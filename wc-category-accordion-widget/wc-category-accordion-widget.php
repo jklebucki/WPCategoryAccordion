@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: WooCommerce Category Accordion Widget
- * Plugin URI: https://github.com/jklebucki/wc-category-accordion-widget
+ * Plugin URI: https://github.com/jklebucki/WPCategoryAccordion
  * Description: Nowoczesny widget wyświetlający kategorie produktów WooCommerce w formie interaktywnego accordion z eleganckim stylowaniem
- * Version: 1.0.1
- * Author: Your Name
+ * Version: 1.0.3
+ * Author: Jarosław Kłębucki
  * Author URI: https://github.com/jklebucki
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,8 +12,9 @@
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.0
- * WC requires at least: 3.0
- * WC tested up to: 8.0
+ * Requires Plugins: woocommerce
+ * WC requires at least: 3.0.0
+ * WC tested up to: 9.4
  */
 
 if (!defined('ABSPATH')) {
@@ -21,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('WC_CAT_ACCORDION_VERSION', '1.0.0');
+define('WC_CAT_ACCORDION_VERSION', '1.0.3');
 define('WC_CAT_ACCORDION_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WC_CAT_ACCORDION_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -80,6 +81,17 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         $title_font_size = isset($instance['title_font_size']) ? absint($instance['title_font_size']) : 18;
         $category_font_size = isset($instance['category_font_size']) ? absint($instance['category_font_size']) : 14;
         
+        // Pobierz ustawienia kolorystyki
+        $text_color = !empty($instance['text_color']) ? sanitize_hex_color($instance['text_color']) : '#2d3748';
+        $hover_color = !empty($instance['hover_color']) ? sanitize_hex_color($instance['hover_color']) : '#7c3aed';
+        $bg_color = !empty($instance['bg_color']) ? sanitize_hex_color($instance['bg_color']) : '#ffffff';
+        $hover_bg_color = !empty($instance['hover_bg_color']) ? sanitize_hex_color($instance['hover_bg_color']) : '#f7fafc';
+        $border_color = !empty($instance['border_color']) ? sanitize_hex_color($instance['border_color']) : '#e8e8e8';
+        $count_bg_color = !empty($instance['count_bg_color']) ? sanitize_hex_color($instance['count_bg_color']) : '#e2e8f0';
+        $count_text_color = !empty($instance['count_text_color']) ? sanitize_hex_color($instance['count_text_color']) : '#4a5568';
+        $icon_color = !empty($instance['icon_color']) ? sanitize_hex_color($instance['icon_color']) : '#718096';
+        $icon_active_color = !empty($instance['icon_active_color']) ? sanitize_hex_color($instance['icon_active_color']) : '#7c3aed';
+        
         // Unikalne ID dla tego widgetu
         $widget_id = $args['widget_id'];
 
@@ -105,10 +117,29 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         ));
 
         if (!empty($categories) && !is_wp_error($categories)) {
-            // Dodaj inline style dla rozmiaru czcionki kategorii
+            // Dodaj inline style dla rozmiaru czcionki i kolorystyki
             echo '<style>';
+            // Rozmiary czcionek
             echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item__link { font-size: ' . esc_attr($category_font_size) . 'px !important; }';
             echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item-count { font-size: ' . esc_attr(max(10, $category_font_size - 2)) . 'px !important; }';
+            
+            // Kolorystyka kontenera
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-widget__container { background: ' . esc_attr($bg_color) . ' !important; border-color: ' . esc_attr($border_color) . ' !important; }';
+            
+            // Kolorystyka tekstu kategorii
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item__link { color: ' . esc_attr($text_color) . ' !important; }';
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item__link:hover { color: ' . esc_attr($hover_color) . ' !important; }';
+            
+            // Kolorystyka tła przy hover
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item:hover { background-color: ' . esc_attr($hover_bg_color) . ' !important; }';
+            
+            // Kolorystyka licznika
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item-count { background-color: ' . esc_attr($count_bg_color) . ' !important; color: ' . esc_attr($count_text_color) . ' !important; }';
+            
+            // Kolorystyka ikony
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list--depth-0 > .wc-category-accordion-list-item.has-children > .wc-category-accordion-list-item__link::before { color: ' . esc_attr($icon_color) . ' !important; }';
+            echo '#' . esc_attr($widget_id) . ' .wc-category-accordion-list-item.expanded > .wc-category-accordion-list-item__link::before { color: ' . esc_attr($icon_active_color) . ' !important; }';
+            
             echo '</style>';
             
             echo '<div class="wc-category-accordion-widget__container">';
@@ -209,6 +240,17 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         $hierarchical = isset($instance['hierarchical']) ? (bool) $instance['hierarchical'] : true;
         $title_font_size = !empty($instance['title_font_size']) ? absint($instance['title_font_size']) : 18;
         $category_font_size = !empty($instance['category_font_size']) ? absint($instance['category_font_size']) : 14;
+        
+        // Ustawienia kolorystyki
+        $text_color = !empty($instance['text_color']) ? $instance['text_color'] : '#2d3748';
+        $hover_color = !empty($instance['hover_color']) ? $instance['hover_color'] : '#7c3aed';
+        $bg_color = !empty($instance['bg_color']) ? $instance['bg_color'] : '#ffffff';
+        $hover_bg_color = !empty($instance['hover_bg_color']) ? $instance['hover_bg_color'] : '#f7fafc';
+        $border_color = !empty($instance['border_color']) ? $instance['border_color'] : '#e8e8e8';
+        $count_bg_color = !empty($instance['count_bg_color']) ? $instance['count_bg_color'] : '#e2e8f0';
+        $count_text_color = !empty($instance['count_text_color']) ? $instance['count_text_color'] : '#4a5568';
+        $icon_color = !empty($instance['icon_color']) ? $instance['icon_color'] : '#718096';
+        $icon_active_color = !empty($instance['icon_active_color']) ? $instance['icon_active_color'] : '#7c3aed';
         ?>
         <p>
             <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
@@ -289,6 +331,90 @@ class WC_Category_Accordion_Widget extends WP_Widget {
                    type="number" min="10" max="32" step="1" value="<?php echo esc_attr($category_font_size); ?>">
             <small><?php _e('Domyślnie: 14px', 'wc-category-accordion-widget'); ?></small>
         </p>
+
+        <hr style="margin: 20px 0;">
+        <h4 style="margin: 10px 0;"><?php _e('Kolorystyka', 'wc-category-accordion-widget'); ?></h4>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('text_color')); ?>">
+                <?php _e('Kolor tekstu kategorii:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('text_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('text_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($text_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('hover_color')); ?>">
+                <?php _e('Kolor tekstu przy najechaniu:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('hover_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('hover_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($hover_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('bg_color')); ?>">
+                <?php _e('Kolor tła kontenera:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('bg_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('bg_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($bg_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('hover_bg_color')); ?>">
+                <?php _e('Kolor tła przy najechaniu:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('hover_bg_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('hover_bg_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($hover_bg_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('border_color')); ?>">
+                <?php _e('Kolor ramki:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('border_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('border_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($border_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('count_bg_color')); ?>">
+                <?php _e('Kolor tła licznika:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('count_bg_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('count_bg_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($count_bg_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('count_text_color')); ?>">
+                <?php _e('Kolor tekstu licznika:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('count_text_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('count_text_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($count_text_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('icon_color')); ?>">
+                <?php _e('Kolor ikony accordion:', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('icon_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('icon_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($icon_color); ?>">
+        </p>
+
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('icon_active_color')); ?>">
+                <?php _e('Kolor ikony (rozwinięta):', 'wc-category-accordion-widget'); ?>
+            </label><br>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('icon_active_color')); ?>" 
+                   name="<?php echo esc_attr($this->get_field_name('icon_active_color')); ?>" 
+                   type="color" value="<?php echo esc_attr($icon_active_color); ?>">
+        </p>
         <?php
     }
 
@@ -305,6 +431,17 @@ class WC_Category_Accordion_Widget extends WP_Widget {
         $instance['hierarchical'] = !empty($new_instance['hierarchical']) ? 1 : 0;
         $instance['title_font_size'] = (!empty($new_instance['title_font_size'])) ? absint($new_instance['title_font_size']) : 18;
         $instance['category_font_size'] = (!empty($new_instance['category_font_size'])) ? absint($new_instance['category_font_size']) : 14;
+        
+        // Kolorystyka
+        $instance['text_color'] = (!empty($new_instance['text_color'])) ? sanitize_hex_color($new_instance['text_color']) : '#2d3748';
+        $instance['hover_color'] = (!empty($new_instance['hover_color'])) ? sanitize_hex_color($new_instance['hover_color']) : '#7c3aed';
+        $instance['bg_color'] = (!empty($new_instance['bg_color'])) ? sanitize_hex_color($new_instance['bg_color']) : '#ffffff';
+        $instance['hover_bg_color'] = (!empty($new_instance['hover_bg_color'])) ? sanitize_hex_color($new_instance['hover_bg_color']) : '#f7fafc';
+        $instance['border_color'] = (!empty($new_instance['border_color'])) ? sanitize_hex_color($new_instance['border_color']) : '#e8e8e8';
+        $instance['count_bg_color'] = (!empty($new_instance['count_bg_color'])) ? sanitize_hex_color($new_instance['count_bg_color']) : '#e2e8f0';
+        $instance['count_text_color'] = (!empty($new_instance['count_text_color'])) ? sanitize_hex_color($new_instance['count_text_color']) : '#4a5568';
+        $instance['icon_color'] = (!empty($new_instance['icon_color'])) ? sanitize_hex_color($new_instance['icon_color']) : '#718096';
+        $instance['icon_active_color'] = (!empty($new_instance['icon_active_color'])) ? sanitize_hex_color($new_instance['icon_active_color']) : '#7c3aed';
 
         return $instance;
     }
@@ -365,3 +502,12 @@ function wc_cat_accordion_add_settings_link($links) {
     return $links;
 }
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'wc_cat_accordion_add_settings_link');
+
+/**
+ * Declare HPOS compatibility
+ */
+add_action('before_woocommerce_init', function() {
+    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+    }
+});
